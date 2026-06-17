@@ -3,58 +3,309 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 网站标题，可自行修改 -->
     <title>昊宸说电脑 - 个人官网</title>
-    <!-- 引入Tailwind CSS（快速做美观UI） -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 引入图标库（抖音、下载、邮箱图标） -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- 自定义样式配置 -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
         * {
             font-family: 'Noto Sans SC', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
-        /* 页面平滑滚动 */
         html {
             scroll-behavior: smooth;
         }
-        /* 渐变背景 */
+        /* 浅色主题默认变量 */
+        :root {
+            --font-size: 1rem;
+            --theme-color-1: #3b82f6;
+            --theme-color-2: #8b5cf6;
+            --bg-primary: linear-gradient(135deg, #f5f7fa 0%, #e4eaf5 100%);
+            --bg-secondary: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --text-muted: #6b7280;
+        }
+        /* 深色主题变量 */
+        .dark {
+            --bg-primary: #121212;
+            --bg-secondary: #1e1e1e;
+            --text-primary: #f9fafb;
+            --text-secondary: #e5e7eb;
+            --text-muted: #9ca3af;
+        }
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4eaf5 100%);
+            background: var(--bg-primary);
+            font-size: var(--font-size);
+            color: var(--text-secondary);
+        }
+        h1,h2,h3,h4,h5 {
+            color: var(--text-primary);
+        }
+        /* 弹窗过渡动画 */
+        #userLetterModal, #settingsModal, #loginModal, #userCenterModal {
+            transition: all 0.3s ease;
+        }
+        /* 🔥 修复：深色模式全区域适配 */
+        .dark .bg-white,
+        .dark #userLetterModal > div,
+        .dark #settingsModal > div,
+        .dark #loginModal > div,
+        .dark #userCenterModal > div,
+        .dark .bg-gradient-to-br {
+            background-color: var(--bg-secondary) !important;
+            background: var(--bg-secondary) !important;
+        }
+        .dark .bg-gray-800 {
+            background-color: #0a0a0a !important;
+        }
+        /* 抽奖动画 */
+        .lottery-roll {
+            animation: roll 0.5s ease-in-out;
+        }
+        @keyframes roll {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1); }
+        }
+        /* 会员权益高亮 */
+        .vip-card {
+            border-left: 4px solid #8b5cf6;
+        }
+        .gold-card {
+            border-left: 4px solid #f59e0b;
+        }
+        .normal-card {
+            border-left: 4px solid #6b7280;
         }
     </style>
 </head>
 <body class="min-h-screen">
 
+<!-- ===================== 弹窗：致访问该站的用户的一封信 ===================== -->
+<div id="userLetterModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-2xl w-full mx-4">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-2xl font-bold">致访问该站的用户的一封信</h3>
+            <button id="closeModal" class="text-gray-500 hover:text-gray-700 transition cursor-pointer">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div class="space-y-4 leading-relaxed">
+            <p>尊敬的用户：</p>
+            <p>欢迎访问“昊宸说电脑”个人官网！在此郑重作出以下声明：</p>
+            <ul class="list-disc pl-5 space-y-2">
+                <li>本站所有资源均<strong>免费提供</strong>，无任何隐藏收费项，绝不诱导用户付费；</li>
+                <li>所有分享的资源均经过多重安全检测，保证<strong>安全无毒</strong>、无捆绑软件、无广告弹窗；</li>
+                <li>本站坚持“纯净、实用、免费”的核心原则，所有内容仅用于学习交流；</li>
+                <li>资源使用过程中如有任何问题，可通过联系邮箱与我沟通，我会尽力解答。</li>
+            </ul>
+            <p>感谢您的信任与支持，祝您使用愉快！</p>
+            <p class="text-right font-medium">—— 昊宸说电脑</p>
+        </div>
+        <div class="mt-6 text-center">
+            <button id="confirmModal" class="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full hover:shadow-lg transition cursor-pointer">
+                我已阅读并知晓
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== 登录注册弹窗 ===================== -->
+<div id="loginModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden opacity-0 pointer-events-none">
+    <div class="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full mx-4">
+        <div class="flex justify-between items-center mb-5">
+            <h4 class="text-xl font-bold" id="authTitle">用户登录</h4>
+            <button id="closeLoginModal" class="text-gray-500 hover:text-gray-700 transition">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm mb-1">账号</label>
+                <input id="authUsername" type="text" class="w-full px-4 py-2 rounded-lg border border-gray-300 outline-none focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm mb-1">密码</label>
+                <input id="authPassword" type="password" class="w-full px-4 py-2 rounded-lg border border-gray-300 outline-none focus:border-blue-500">
+            </div>
+            <div class="flex gap-2">
+                <button id="loginBtn" class="flex-1 py-2 bg-blue-500 text-white rounded-lg">登录</button>
+                <button id="switchRegisterBtn" class="flex-1 py-2 bg-gray-200 rounded-lg">注册</button>
+            </div>
+            <p id="authTip" class="text-red-500 text-sm text-center hidden"></p>
+        </div>
+    </div>
+</div>
+
+<!-- ===================== 全新会员中心（集成所有功能） ===================== -->
+<div id="userCenterModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden opacity-0 pointer-events-none">
+    <div class="bg-white rounded-2xl shadow-xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-5">
+            <h4 class="text-xl font-bold">🎖️ 个人会员中心</h4>
+            <button id="closeUserCenter" class="text-gray-500 hover:text-gray-700 transition">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <!-- 1. 个人信息实时展示 -->
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
+                <div>
+                    <p class="text-sm text-gray-500">用户名</p>
+                    <p id="userNameText" class="text-lg font-bold">未登录</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">当前等级</p>
+                    <p id="userLevelText" class="text-lg font-bold text-yellow-500">0</p>
+                </div>
+                <div>
+                    <p class="text-sm text-gray-500">会员身份</p>
+                    <p id="userVipText" class="text-lg font-bold text-purple-500">普通用户</p>
+                </div>
+            </div>
+            <p class="text-xs text-center text-gray-500 mt-2">⏱️ 在线时长越长，等级越高，特权越多！</p>
+        </div>
+
+        <!-- 2. 会员等级权益说明（清晰展示每个会员能干嘛） -->
+        <div class="mb-6">
+            <h5 class="font-bold mb-3 flex items-center gap-2"><i class="fas fa-crown text-yellow-500"></i> 会员等级特权</h5>
+            <div class="space-y-3">
+                <div class="p-3 rounded-lg normal-card">
+                    <p class="font-bold">👤 普通用户（1-9级）</p>
+                    <p class="text-sm">· 正常浏览网站全部内容</p>
+                    <p class="text-sm">· 免费下载所有资源</p>
+                </div>
+                <div class="p-3 rounded-lg gold-card">
+                    <p class="font-bold">🥇 黄金会员（≥10级）</p>
+                    <p class="text-sm">· 享受普通用户全部特权</p>
+                    <p class="text-sm">· 解锁<span class="text-yellow-500 font-bold">会员抽奖</span>功能</p>
+                </div>
+                <div class="p-3 rounded-lg vip-card">
+                    <p class="font-bold">💎 VIP会员（永久）</p>
+                    <p class="text-sm">· 享受黄金会员全部特权</p>
+                    <p class="text-sm">· 无限次免费抽奖</p>
+                    <p class="text-sm">· 全站专属标识</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 集成抽奖功能（新增再次抽奖按钮） -->
+        <div class="mb-6">
+            <h5 class="font-bold mb-3 flex items-center gap-2"><i class="fas fa-gift text-orange-500"></i> 会员专属抽奖</h5>
+            <div class="border rounded-lg p-4 text-center">
+                <!-- 双抽奖按钮：开始抽奖 + 再次抽奖 -->
+                <div class="flex gap-3 mb-3">
+                    <button id="lotteryBtn" class="flex-1 px-6 py-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white rounded-lg font-bold">
+                        🎁 开始抽奖
+                    </button>
+                    <button id="lotteryAgainBtn" class="flex-1 px-6 py-3 bg-gradient-to-r from-purple-400 to-purple-600 text-white rounded-lg font-bold">
+                        🔄 再次抽奖
+                    </button>
+                </div>
+                <!-- 抽奖结果实时展示 -->
+                <div id="lotteryResult" class="mt-4 text-xl font-bold lottery-roll hidden"></div>
+                <p class="text-xs text-gray-500 mt-2">奖品：等级+1 | 谢谢惠顾 | 直升VIP</p>
+            </div>
+        </div>
+
+        <!-- 4. 退出登录 -->
+        <button id="logoutBtn" class="w-full py-2 bg-red-500 text-white rounded-lg">
+            退出登录
+        </button>
+    </div>
+</div>
+
+<!-- ===================== 设置弹窗（模态框） ===================== -->
+<div id="settingsModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden opacity-0 pointer-events-none">
+    <div class="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full mx-4">
+        <!-- 弹窗头部 -->
+        <div class="flex justify-between items-center mb-5">
+            <h4 class="text-xl font-bold flex items-center gap-2">
+                <i class="fas fa-sliders-h text-blue-500"></i> 页面个性化设置
+            </h4>
+            <button id="closeSettingsModal" class="text-gray-500 hover:text-gray-700 transition">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+
+        <!-- 字体大小设置 -->
+        <div class="mb-6">
+            <h5 class="text-sm font-medium mb-2">字体大小</h5>
+            <div class="flex gap-2">
+                <button class="font-size-btn px-4 py-2 rounded bg-gray-100 hover:bg-gray-200 transition w-1/3" data-size="0.875rem">小</button>
+                <button class="font-size-btn px-4 py-2 rounded bg-blue-500 text-white transition w-1/3" data-size="1rem">中</button>
+                <button class="font-size-btn px-4 py-2 rounded bg-gray-100 hover:bg-gray-200 transition w-1/3" data-size="1.125rem">大</button>
+            </div>
+        </div>
+
+        <!-- 黑白主题模式 ===================== -->
+        <div class="mb-6">
+            <h5 class="text-sm font-medium mb-2">主题模式</h5>
+            <div class="flex gap-2">
+                <button class="mode-btn px-4 py-2 rounded bg-gray-100 hover:bg-gray-200 transition w-1/2" data-mode="light">
+                    <i class="fas fa-sun mr-1"></i> 浅色
+                </button>
+                <button class="mode-btn px-4 py-2 rounded bg-gray-100 hover:bg-gray-200 transition w-1/2" data-mode="dark">
+                    <i class="fas fa-moon mr-1"></i> 深色
+                </button>
+            </div>
+        </div>
+
+        <!-- 主题颜色设置 -->
+        <div class="mb-6">
+            <h5 class="text-sm font-medium mb-2">主题色彩</h5>
+            <div class="flex gap-3 justify-center">
+                <button class="theme-btn w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 border-2 border-gray-300 hover:scale-110 transition" data-theme="blue"></button>
+                <button class="theme-btn w-12 h-12 rounded-full bg-gradient-to-r from-green-500 to-emerald-600 border-2 border-transparent hover:scale-110 transition" data-theme="green"></button>
+                <button class="theme-btn w-12 h-12 rounded-full bg-gradient-to-r from-orange-500 to-red-500 border-2 border-transparent hover:scale-110 transition" data-theme="orange"></button>
+            </div>
+        </div>
+
+        <!-- 保存关闭按钮 -->
+        <div class="mt-6 text-center">
+            <button id="saveSettings" class="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full hover:shadow-lg transition">
+                保存并关闭
+            </button>
+        </div>
+    </div>
+</div>
+
 <!-- ===================== 导航栏 ===================== -->
-<header class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm shadow-sm">
+<header class="sticky top-0 z-40 bg-white/90 backdrop-blur-sm shadow-sm">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <!-- 网站Logo/名称，可修改 -->
+        <!-- Logo/名称 -->
         <a href="#" class="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
             昊宸说电脑 ✨
         </a>
-        <!-- 导航菜单（已新增 了解我） -->
+        <!-- 导航菜单 -->
         <nav class="hidden md:flex gap-6">
             <a href="#home" class="text-gray-700 hover:text-blue-500 transition">首页</a>
             <a href="#about" class="text-gray-700 hover:text-blue-500 transition">了解我</a>
             <a href="#download" class="text-gray-700 hover:text-blue-500 transition">下载专区</a>
             <a href="#contact" class="text-gray-700 hover:text-blue-500 transition">联系我</a>
         </nav>
+        <div class="flex items-center gap-3">
+            <!-- 用户按钮 -->
+            <button id="userCenterBtn" class="px-4 py-2 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white text-sm">
+                <i class="fas fa-user mr-1"></i> 登录/注册
+            </button>
+            <!-- 设置按钮 -->
+            <button id="settingsBtn" class="flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
+                <i class="fas fa-cog text-xl"></i>
+            </button>
+        </div>
     </div>
 </header>
 
 <!-- ===================== 首页英雄区 ===================== -->
 <section id="home" class="container mx-auto px-4 py-16 md:py-24 text-center">
-    <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-gray-800 mb-4">
+    <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold mb-4">
         欢迎来到我的 昊宸说电脑 官网
     </h1>
-    <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+    <p class="text-lg mb-8 max-w-2xl mx-auto">
         分享纯净系统镜像、实用工具、自制病毒，用心做有价值的内容 💻
     </p>
-
-    <!-- ===================== 抖音跳转按钮 ===================== -->
-    <!-- 👇👇👇 请修改这里的 href 为你的抖音主页链接！👇👇👇 -->
     <a 
         href="https://v.douyin.com/mMvq7qj82kI/" 
         target="_blank" 
@@ -64,23 +315,19 @@
     </a>
 </section>
 
-<!-- ===================== 新增：了解我模块 ===================== -->
+<!-- ===================== 了解我模块 ===================== -->
 <section id="about" class="container mx-auto px-4 py-12 my-8">
     <div class="bg-white rounded-2xl shadow-md p-8 md:p-12 max-w-4xl mx-auto">
         <div class="text-center mb-8">
-            <h2 class="text-3xl font-bold text-gray-800 mb-2">🙋‍♂️ 关于我</h2>
+            <h2 class="text-3xl font-bold mb-2">🙋‍♂️ 关于我</h2>
             <p class="text-gray-500">一名热爱技术、乐于分享的小博主</p>
         </div>
-        
-        <div class="space-y-4 text-gray-600 text-lg leading-relaxed">
-            <!-- 👇👇👇 这里修改你的个人介绍 👇👇👇 -->
+        <div class="space-y-4 text-lg leading-relaxed">
             <p>大家好！我是 抖音 博主，专注分享<strong>纯净系统镜像、实用网络工具、自制病毒</strong>。</p>
-            <p>我讨厌繁杂捆绑、广告弹窗，所以所有分享的资源都坚持<strong>纯净、免费、易用</strong>的原则，只为给大家带来最省心的体验。</p>
+            <p>我讨厌繁杂捆绑、广告弹窗，所以所有分享的资源都坚持<strong>纯净、免费、易用</strong>的原则，只为大家带来最省心的体验。</p>
             <p>平时喜欢研究电脑技术、开发小工具、制作实用教程，希望用自己的微薄之力，帮助更多有需要的朋友～</p>
             <p>感谢大家的关注与支持，我会持续更新优质内容，不忘初心，用心分享！❤️</p>
         </div>
-
-        <!-- 个人标签（可自行增删） -->
         <div class="flex flex-wrap justify-center gap-3 mt-8">
             <span class="px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm">技术分享</span>
             <span class="px-4 py-2 bg-purple-100 text-purple-600 rounded-full text-sm">系统镜像</span>
@@ -93,40 +340,33 @@
 <!-- ===================== 下载专区 ===================== -->
 <section id="download" class="container mx-auto px-4 py-12 bg-white rounded-2xl shadow-md my-8">
     <div class="text-center mb-10">
-        <h2 class="text-3xl font-bold text-gray-800 mb-2">📦 下载专区</h2>
+        <h2 class="text-3xl font-bold mb-2">📦 下载专区</h2>
         <p class="text-gray-500">纯净资源 | 实用工具 | 自制小程序</p>
     </div>
-
-    <!-- 下载卡片布局 -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- 卡片1：390病毒 -->
+        <!-- 卡片1 -->
         <div class="bg-gradient-to-br from-blue-50 to-white rounded-xl p-6 shadow hover:shadow-lg transition">
             <div class="text-4xl text-blue-500 mb-4"><i class="fas fa-hdd"></i></div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-2">我的第一个病毒</h3>
-            <p class="text-gray-600 mb-4">无捆绑、无广告、原版纯净病毒</p>
-            <!-- 👇 系统镜像下载链接，自行修改 -->
+            <h3 class="text-xl font-semibold mb-2">我的第一个病毒</h3>
+            <p class="mb-4">无捆绑、无广告、原版纯净病毒!是我的封神制作！</p>
             <a href="https://wwbcd.lanzout.com/iUJzg3s21mbi" class="inline-block px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
                 <i class="fas fa-download mr-1"></i> 立即下载（密码:ciok）
             </a>
         </div>
-
-        <!-- 卡片2：威海杀毒工具 -->
+        <!-- 卡片2 -->
         <div class="bg-gradient-to-br from-purple-50 to-white rounded-xl p-6 shadow hover:shadow-lg transition">
             <div class="text-4xl text-purple-500 mb-4"><i class="fas fa-network-wired"></i></div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-2">杀毒定向工具</h3>
-            <p class="text-gray-600 mb-4">个人制作的轻量网络定向、杀毒小工具</p>
-            <!-- 👇 定向工具下载链接，自行修改 -->
+            <h3 class="text-xl font-semibold mb-2">杀毒定向工具</h3>
+            <p class="mb-4">个人制作的轻量网络定向、杀毒小工具</p>
             <a href="https://wwbcd.lanzout.com/iWIAd3p0yibc" class="inline-block px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition">
                 <i class="fas fa-download mr-1"></i> 立即下载（密码:gt38）
             </a>
         </div>
-
-        <!-- 卡片3：whchat社交 -->
+        <!-- 卡片3 -->
         <div class="bg-gradient-to-br from-green-50 to-white rounded-xl p-6 shadow hover:shadow-lg transition">
             <div class="text-4xl text-green-500 mb-4"><i class="fas fa-cube"></i></div>
-            <h3 class="text-xl font-semibold text-gray-800 mb-2">自制小程序</h3>
-            <p class="text-gray-600 mb-4">日常实用小工具、自动化脚本、轻量小程序</p>
-            <!-- 👇 自制小程序下载链接，自行修改 -->
+            <h3 class="text-xl font-semibold mb-2">自制小程序</h3>
+            <p class="mb-4">日常实用小工具、自动化脚本、轻量小程序</p>
             <a href="https://wwbcd.lanzout.com/b016krnhef" class="inline-block px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
                 <i class="fas fa-download mr-1"></i> 立即下载（密码:8xuy）
             </a>
@@ -134,16 +374,14 @@
     </div>
 </section>
 
-<!-- ===================== 联系我（QQ邮箱） ===================== -->
+<!-- ===================== 联系我 ===================== -->
 <section id="contact" class="container mx-auto px-4 py-16 text-center">
-    <h2 class="text-3xl font-bold text-gray-800 mb-6">📩 联系我</h2>
-    <!-- ===================== Hotmail 邮箱 ===================== -->
-    <!-- 👇👇👇 请修改这里的 Hotmail 邮箱地址！👇👇👇 -->
+    <h2 class="text-3xl font-bold mb-6">📩 联系我</h2>
     <a 
         href="mailto:haochen-gongzuoshi@qq.com" 
         class="inline-flex items-center gap-2 px-6 py-3 border-2 border-blue-500 text-blue-500 rounded-full text-lg font-medium hover:bg-blue-500 hover:text-white transition"
     >
-        <i class="fas fa-envelope"></i> 发送 QQ 邮件（haochen-gongzuoshi@qq.com可以来联系我）
+        <i class="fas fa-envelope"></i> 发送 QQ 邮件（haochen-gongzuoshi@qq.com）
     </a>
     <p class="text-gray-500 mt-4">工作合作、资源问题均可邮件联系</p>
 </section>
@@ -155,6 +393,314 @@
         <p class="text-gray-400 text-sm mt-2">用心分享，感谢支持 ❤️</p>
     </div>
 </footer>
+
+<!-- ===================== 功能脚本 ===================== -->
+<script>
+    // 1. 声明弹窗功能
+    const modal = document.getElementById('userLetterModal');
+    const closeModalBtn = document.getElementById('closeModal');
+    const confirmModalBtn = document.getElementById('confirmModal');
+
+    function closeModal() {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => modal.style.display = 'none', 300);
+    }
+    closeModalBtn.addEventListener('click', closeModal);
+    confirmModalBtn.addEventListener('click', closeModal);
+
+    // 2. 设置弹窗功能
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsModal = document.getElementById('settingsModal');
+    const closeSettingsModal = document.getElementById('closeSettingsModal');
+    const saveSettings = document.getElementById('saveSettings');
+    const fontSizeBtns = document.querySelectorAll('.font-size-btn');
+    const themeBtns = document.querySelectorAll('.theme-btn');
+    const modeBtns = document.querySelectorAll('.mode-btn');
+    const root = document.documentElement;
+
+    // 打开设置弹窗
+    function openSettings() {
+        settingsModal.style.display = 'flex';
+        setTimeout(() => {
+            settingsModal.classList.remove('opacity-0', 'pointer-events-none');
+        }, 10);
+    }
+
+    // 关闭设置弹窗
+    function closeSettings() {
+        settingsModal.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => settingsModal.style.display = 'none', 300);
+    }
+
+    // 绑定事件
+    settingsBtn.addEventListener('click', openSettings);
+    closeSettingsModal.addEventListener('click', closeSettings);
+    saveSettings.addEventListener('click', closeSettings);
+    settingsModal.addEventListener('click', (e) => {
+        if (e.target === settingsModal) closeSettings();
+    });
+
+    // 3. 字体大小调整
+    fontSizeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            fontSizeBtns.forEach(b => {
+                b.classList.remove('bg-blue-500', 'text-white');
+                b.classList.add('bg-gray-100', 'hover:bg-gray-200');
+            });
+            btn.classList.remove('bg-gray-100', 'hover:bg-gray-200');
+            btn.classList.add('bg-blue-500', 'text-white');
+            root.style.setProperty('--font-size', btn.getAttribute('data-size'));
+        });
+    });
+
+    // 4. 黑白主题模式切换
+    document.querySelector('[data-mode="light"]').classList.add('bg-blue-500', 'text-white');
+    modeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            modeBtns.forEach(b => {
+                b.classList.remove('bg-blue-500', 'text-white');
+                b.classList.add('bg-gray-100', 'hover:bg-gray-200');
+            });
+            btn.classList.remove('bg-gray-100', 'hover:bg-gray-200');
+            btn.classList.add('bg-blue-500', 'text-white');
+            
+            const mode = btn.getAttribute('data-mode');
+            if(mode === 'dark'){
+                document.body.classList.add('dark');
+            }else{
+                document.body.classList.remove('dark');
+            }
+        });
+    });
+
+    // 5. 彩色主题切换
+    themeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            themeBtns.forEach(b => {
+                b.classList.remove('border-gray-300');
+                b.classList.add('border-transparent');
+            });
+            btn.classList.remove('border-transparent');
+            btn.classList.add('border-gray-300');
+            
+            const theme = btn.getAttribute('data-theme');
+            let color1, color2;
+            switch(theme) {
+                case 'blue':
+                    color1 = 'blue-500';
+                    color2 = 'purple-600';
+                    break;
+                case 'green':
+                    color1 = 'green-500';
+                    color2 = 'emerald-600';
+                    break;
+                case 'orange':
+                    color1 = 'orange-500';
+                    color2 = 'red-500';
+                    break;
+            }
+
+            const gradientElements = document.querySelectorAll('.bg-gradient-to-r');
+            gradientElements.forEach(el => {
+                el.classList.remove('from-blue-500','to-purple-600','from-green-500','to-emerald-600','from-orange-500','to-red-500');
+                el.classList.add(`from-${color1}`, `to-${color2}`);
+            });
+
+            const colorBtns = document.querySelectorAll('.bg-blue-500, .bg-purple-500, .bg-green-500');
+            colorBtns.forEach(el => {
+                el.classList.remove('bg-blue-500','hover:bg-blue-600','bg-purple-500','hover:bg-purple-600','bg-green-500','hover:bg-green-600');
+                el.classList.add(`bg-${color1}`, `hover:bg-${color1.replace('500','600')}`);
+            });
+
+            const tags = document.querySelectorAll('.bg-blue-100,.bg-purple-100,.bg-green-100,.bg-orange-100');
+            tags.forEach(tag => {
+                tag.classList.remove('bg-blue-100','text-blue-600','bg-purple-100','text-purple-600','bg-green-100','text-green-600','bg-orange-100','text-orange-600');
+                tag.classList.add(`bg-${color1.replace('500','100')}`, `text-${color1.replace('500','600')}`);
+            });
+
+            const contactBtn = document.querySelector('.border-blue-500');
+            contactBtn.classList.remove('border-blue-500','text-blue-500','hover:bg-blue-500');
+            contactBtn.classList.add(`border-${color1}`, `text-${color1}`, `hover:bg-${color1}`);
+        });
+    });
+
+    // ===================== 优化版：用户会员系统 =====================
+    let currentUser = null;
+    const userCenterBtn = document.getElementById('userCenterBtn');
+    const loginModal = document.getElementById('loginModal');
+    const userCenterModal = document.getElementById('userCenterModal');
+    const lotteryBtn = document.getElementById('lotteryBtn');
+    const lotteryAgainBtn = document.getElementById('lotteryAgainBtn'); // 新增再次抽奖按钮
+    const lotteryResult = document.getElementById('lotteryResult');
+    
+    // 打开/关闭弹窗通用方法
+    function openModal(modal) {
+        modal.style.display = 'flex';
+        setTimeout(() => modal.classList.remove('opacity-0', 'pointer-events-none'), 10);
+    }
+    function closeModalFunc(modal) {
+        modal.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => modal.style.display = 'none', 300);
+    }
+
+    // 初始化用户数据
+    function initUserData() {
+        if(!localStorage.getItem('users')) localStorage.setItem('users', JSON.stringify([]));
+        currentUser = JSON.parse(localStorage.getItem('currentUser') || null);
+        updateUserUI();
+        if(currentUser) startLevelTimer();
+    }
+
+    // 更新用户界面（实时展示）
+    function updateUserUI() {
+        if(currentUser) {
+            userCenterBtn.innerHTML = `<i class="fas fa-user mr-1"></i> ${currentUser.username}`;
+            document.getElementById('userNameText').textContent = currentUser.username;
+            document.getElementById('userLevelText').textContent = currentUser.level;
+            
+            let vipText = '普通用户';
+            if(currentUser.isVip) vipText = '💎 VIP会员';
+            else if(currentUser.level >= 10) vipText = '🥇 黄金会员';
+            document.getElementById('userVipText').textContent = vipText;
+            
+            // 控制抽奖按钮显示
+            const isLotteryEnabled = currentUser.level >=10 || currentUser.isVip;
+            lotteryBtn.classList.toggle('hidden', !isLotteryEnabled);
+            lotteryAgainBtn.classList.toggle('hidden', !isLotteryEnabled);
+            lotteryBtn.disabled = false;
+            lotteryAgainBtn.disabled = false;
+            lotteryResult.classList.add('hidden');
+        } else {
+            userCenterBtn.innerHTML = `<i class="fas fa-user mr-1"></i> 登录/注册`;
+            document.getElementById('userNameText').textContent = '未登录';
+            document.getElementById('userLevelText').textContent = '0';
+            document.getElementById('userVipText').textContent = '普通用户';
+            lotteryBtn.classList.add('hidden');
+            lotteryAgainBtn.classList.add('hidden');
+        }
+    }
+
+    // 登录注册逻辑
+    const authTitle = document.getElementById('authTitle');
+    const authUsername = document.getElementById('authUsername');
+    const authPassword = document.getElementById('authPassword');
+    const loginBtn = document.getElementById('loginBtn');
+    const switchRegisterBtn = document.getElementById('switchRegisterBtn');
+    const authTip = document.getElementById('authTip');
+    let isRegisterMode = false;
+
+    switchRegisterBtn.addEventListener('click', () => {
+        isRegisterMode = !isRegisterMode;
+        authTitle.textContent = isRegisterMode ? '用户注册' : '用户登录';
+        loginBtn.textContent = isRegisterMode ? '注册' : '登录';
+        switchRegisterBtn.textContent = isRegisterMode ? '去登录' : '注册';
+        authTip.classList.add('hidden');
+    });
+
+    // 登录/注册提交
+    loginBtn.addEventListener('click', () => {
+        const username = authUsername.value.trim();
+        const password = authPassword.value.trim();
+        if(!username || !password) {
+            authTip.textContent = '账号密码不能为空！';
+            authTip.classList.remove('hidden');
+            return;
+        }
+        const users = JSON.parse(localStorage.getItem('users'));
+        if(isRegisterMode) {
+            if(users.find(u => u.username === username)) {
+                authTip.textContent = '账号已存在！';
+                authTip.classList.remove('hidden');
+                return;
+            }
+            users.push({ username, password, level: 1, onlineTime: 0, isVip: false });
+            localStorage.setItem('users', JSON.stringify(users));
+            authTip.textContent = '注册成功！请登录';
+            authTip.classList.remove('hidden');
+            setTimeout(() => switchRegisterBtn.click(), 1000);
+        } else {
+            const user = users.find(u => u.username === username && u.password === password);
+            if(!user) {
+                authTip.textContent = '账号或密码错误！';
+                authTip.classList.remove('hidden');
+                return;
+            }
+            currentUser = user;
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            closeModalFunc(loginModal);
+            updateUserUI();
+            startLevelTimer();
+        }
+    });
+
+    // 等级计时：每60秒升1级
+    let levelTimer = null;
+    function startLevelTimer() {
+        if(levelTimer) clearInterval(levelTimer);
+        levelTimer = setInterval(() => {
+            if(!currentUser) return clearInterval(levelTimer);
+            currentUser.onlineTime = (currentUser.onlineTime || 0) + 1;
+            if(currentUser.onlineTime % 60 === 0) {
+                currentUser.level += 1;
+                saveUser();
+                updateUserUI();
+            }
+        }, 1000);
+    }
+
+    // 保存用户数据
+    function saveUser() {
+        const users = JSON.parse(localStorage.getItem('users'));
+        const index = users.findIndex(u => u.username === currentUser.username);
+        users[index] = currentUser;
+        localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+    }
+
+    // 抽奖核心函数
+    function startLottery() {
+        lotteryBtn.disabled = true;
+        lotteryAgainBtn.disabled = true;
+        lotteryResult.classList.remove('hidden');
+        lotteryResult.textContent = '🎰 抽奖中...';
+        
+        setTimeout(() => {
+            const prizes = ['增加1等级', '谢谢惠顾', '成为VIP'];
+            const win = prizes[Math.floor(Math.random() * prizes.length)];
+            lotteryResult.textContent = win;
+
+            // 发放奖品
+            if(win === '增加1等级') {
+                currentUser.level += 1;
+            } else if(win === '成为VIP') {
+                currentUser.isVip = true;
+            }
+            saveUser();
+            updateUserUI();
+        }, 800);
+    }
+
+    // 绑定抽奖按钮
+    lotteryBtn.addEventListener('click', startLottery);
+    lotteryAgainBtn.addEventListener('click', startLottery); // 再次抽奖绑定
+
+    // 按钮绑定
+    userCenterBtn.addEventListener('click', () => {
+        currentUser ? openModal(userCenterModal) : openModal(loginModal);
+    });
+    document.getElementById('closeLoginModal').addEventListener('click', () => closeModalFunc(loginModal));
+    document.getElementById('closeUserCenter').addEventListener('click', () => closeModalFunc(userCenterModal));
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        currentUser = null;
+        localStorage.removeItem('currentUser');
+        closeModalFunc(userCenterModal);
+        updateUserUI();
+        clearInterval(levelTimer);
+    });
+
+    // 初始化
+    window.addEventListener('DOMContentLoaded', initUserData);
+</script>
 
 </body>
 </html>
