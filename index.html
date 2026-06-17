@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 网站标题，可自行修改 -->
+    <title>昊宸说电脑 - 个人官网</title>
+    <!-- 引入Tailwind CSS（快速做美观UI） -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入图标库（抖音、下载、邮箱图标） -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- 自定义样式配置 -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        * {
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        /* 页面平滑滚动 */
+        html {
+            scroll-behavior: smooth;
+        }
+        /* 渐变背景 */
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4eaf5 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+<!-- ===================== 导航栏 ===================== -->
+<header class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm shadow-sm">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <!-- 网站Logo/名称，可修改 -->
+        <a href="#" class="text-2xl font-bold bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
+            昊宸说电脑 ✨
+        </a>
+        <!-- 导航菜单（已新增 了解我） -->
+        <nav class="hidden md:flex gap-6">
+            <a href="#home" class="text-gray-700 hover:text-blue-500 transition">首页</a>
+            <a href="#about" class="text-gray-700 hover:text-blue-500 transition">了解我</a>
+            <a href="#download" class="text-gray-700 hover:text-blue-500 transition">下载专区</a>
+            <a href="#contact" class="text-gray-700 hover:text-blue-500 transition">联系我</a>
+        </nav>
+    </div>
+</header>
+
+<!-- ===================== 首页英雄区 ===================== -->
+<section id="home" class="container mx-auto px-4 py-16 md:py-24 text-center">
+    <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-gray-800 mb-4">
+        欢迎来到我的 昊宸说电脑 官网
+    </h1>
+    <p class="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
+        分享纯净系统镜像、实用工具、自制病毒，用心做有价值的内容 💻
+    </p>
+
+    <!-- ===================== 抖音跳转按钮 ===================== -->
+    <!-- 👇👇👇 请修改这里的 href 为你的抖音主页链接！👇👇👇 -->
+    <a 
+        href="https://v.douyin.com/mMvq7qj82kI/" 
+        target="_blank" 
+        class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-full text-lg font-medium shadow-lg hover:shadow-xl transition transform hover:-translate-y-1"
+    >
+        <i class="fab fa-tiktok"></i> 快速前往我的抖音主页
+    </a>
+</section>
+
+<!-- ===================== 新增：了解我模块 ===================== -->
+<section id="about" class="container mx-auto px-4 py-12 my-8">
+    <div class="bg-white rounded-2xl shadow-md p-8 md:p-12 max-w-4xl mx-auto">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">🙋‍♂️ 关于我</h2>
+            <p class="text-gray-500">一名热爱技术、乐于分享的小博主</p>
+        </div>
+        
+        <div class="space-y-4 text-gray-600 text-lg leading-relaxed">
+            <!-- 👇👇👇 这里修改你的个人介绍 👇👇👇 -->
+            <p>大家好！我是 抖音 博主，专注分享<strong>纯净系统镜像、实用网络工具、自制病毒</strong>。</p>
+            <p>我讨厌繁杂捆绑、广告弹窗，所以所有分享的资源都坚持<strong>纯净、免费、易用</strong>的原则，只为给大家带来最省心的体验。</p>
+            <p>平时喜欢研究电脑技术、开发小工具、制作实用教程，希望用自己的微薄之力，帮助更多有需要的朋友～</p>
+            <p>感谢大家的关注与支持，我会持续更新优质内容，不忘初心，用心分享！❤️</p>
+        </div>
+
+        <!-- 个人标签（可自行增删） -->
+        <div class="flex flex-wrap justify-center gap-3 mt-8">
+            <span class="px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm">技术分享</span>
+            <span class="px-4 py-2 bg-purple-100 text-purple-600 rounded-full text-sm">系统镜像</span>
+            <span class="px-4 py-2 bg-green-100 text-green-600 rounded-full text-sm">自制工具</span>
+            <span class="px-4 py-2 bg-orange-100 text-orange-600 rounded-full text-sm">热心博主</span>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== 下载专区 ===================== -->
+<section id="download" class="container mx-auto px-4 py-12 bg-white rounded-2xl shadow-md my-8">
+    <div class="text-center mb-10">
+        <h2 class="text-3xl font-bold text-gray-800 mb-2">📦 下载专区</h2>
+        <p class="text-gray-500">纯净资源 | 实用工具 | 自制小程序</p>
+    </div>
+
+    <!-- 下载卡片布局 -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- 卡片1：390病毒 -->
+        <div class="bg-gradient-to-br from-blue-50 to-white rounded-xl p-6 shadow hover:shadow-lg transition">
+            <div class="text-4xl text-blue-500 mb-4"><i class="fas fa-hdd"></i></div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">我的第一个病毒</h3>
+            <p class="text-gray-600 mb-4">无捆绑、无广告、原版纯净病毒</p>
+            <!-- 👇 系统镜像下载链接，自行修改 -->
+            <a href="https://wwbcd.lanzout.com/iUJzg3s21mbi" class="inline-block px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                <i class="fas fa-download mr-1"></i> 立即下载（密码:ciok）
+            </a>
+        </div>
+
+        <!-- 卡片2：威海杀毒工具 -->
+        <div class="bg-gradient-to-br from-purple-50 to-white rounded-xl p-6 shadow hover:shadow-lg transition">
+            <div class="text-4xl text-purple-500 mb-4"><i class="fas fa-network-wired"></i></div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">杀毒定向工具</h3>
+            <p class="text-gray-600 mb-4">个人制作的轻量网络定向、杀毒小工具</p>
+            <!-- 👇 定向工具下载链接，自行修改 -->
+            <a href="https://wwbcd.lanzout.com/iWIAd3p0yibc" class="inline-block px-4 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition">
+                <i class="fas fa-download mr-1"></i> 立即下载（密码:gt38）
+            </a>
+        </div>
+
+        <!-- 卡片3：whchat社交 -->
+        <div class="bg-gradient-to-br from-green-50 to-white rounded-xl p-6 shadow hover:shadow-lg transition">
+            <div class="text-4xl text-green-500 mb-4"><i class="fas fa-cube"></i></div>
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">自制小程序</h3>
+            <p class="text-gray-600 mb-4">日常实用小工具、自动化脚本、轻量小程序</p>
+            <!-- 👇 自制小程序下载链接，自行修改 -->
+            <a href="https://wwbcd.lanzout.com/b016krnhef" class="inline-block px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+                <i class="fas fa-download mr-1"></i> 立即下载（密码:8xuy）
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ===================== 联系我（QQ邮箱） ===================== -->
+<section id="contact" class="container mx-auto px-4 py-16 text-center">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">📩 联系我</h2>
+    <!-- ===================== Hotmail 邮箱 ===================== -->
+    <!-- 👇👇👇 请修改这里的 Hotmail 邮箱地址！👇👇👇 -->
+    <a 
+        href="mailto:haochen-gongzuoshi@qq.com" 
+        class="inline-flex items-center gap-2 px-6 py-3 border-2 border-blue-500 text-blue-500 rounded-full text-lg font-medium hover:bg-blue-500 hover:text-white transition"
+    >
+        <i class="fas fa-envelope"></i> 发送 QQ 邮件（haochen-gongzuoshi@qq.com可以来联系我）
+    </a>
+    <p class="text-gray-500 mt-4">工作合作、资源问题均可邮件联系</p>
+</section>
+
+<!-- ===================== 页脚 ===================== -->
+<footer class="bg-gray-800 text-white py-8 mt-12">
+    <div class="container mx-auto px-4 text-center">
+        <p>© 2025 昊宸说电脑 个人博客 | 所有资源仅供学习使用</p>
+        <p class="text-gray-400 text-sm mt-2">用心分享，感谢支持 ❤️</p>
+    </div>
+</footer>
+
+</body>
+</html>
